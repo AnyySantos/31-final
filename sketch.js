@@ -5,7 +5,7 @@ const Constraint = Matter.Constraint;
 var engine, world, backgroundImg;
 var canvas, angle, tower, ground, cannon;
 var balls = [];
-
+var boats = [];
 
 function preload() {
   backgroundImg = loadImage("./assets/background.gif");
@@ -21,14 +21,14 @@ function setup() {
   ground = new Ground(0, height - 1, width * 2, 1);
   tower = new Tower(150, 350, 160, 310);
   cannon = new Cannon(180, 110, 100, 50, angle);
-//crie um objeto de navio 
+
   
 
-boat = new Boat(width, height - 100, 200, 200, -100);
   
 }
 
 function draw() {
+  showBoats()
   background(189);
   image(backgroundImg, 0, 0, width, height);
 
@@ -36,17 +36,13 @@ function draw() {
 
   Engine.update(engine);
   ground.display();
-
+showBoats();
  
-  Matter.Body.setVelocity(boat.body, {
-    x: -0.9,
-    y: 0
-  });
-  boat.display()
+
   for (var i = 0; i < balls.length; i++) {
     showCannonBalls(balls[i], i);
   }
-//exibir o navio
+
   cannon.display();
   tower.display();
 
@@ -69,12 +65,39 @@ function showCannonBalls(ball, index) {
   }
 }
 
-
-
+ 
+// VARIOS 
+    function showBoats() {
+      if (boats.length > 0) {
+        if (
+          boats.length < 4 &&
+          boats[boats.length - 1].body.position.x < width - 300
+        ) {
+          var positions = [-130, -100, -120, -80];
+          var position = random(positions);
+          var boat = new Boat(width,height - 100, 200, 200, position);
+          boats.push(boat);
+        }
+    
+        for (var i = 0; i < boats.length; i++) {
+          Matter.Body.setVelocity(boats[i].body, {
+            x: -0.9,
+            y: 0
+          });
+    
+          boats[i].display();
+        }
+      } else {
+        var boat = new Boat(width, height - 100, 200, 200, -100);
+        boats.push(boat);
+      }
+    }
 function keyReleased() {
   if (keyCode === DOWN_ARROW) { 
     balls[balls.length - 1].shoot();
   }
 }
+
+
 
 
